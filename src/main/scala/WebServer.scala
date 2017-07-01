@@ -1,12 +1,18 @@
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
+import spray.json.DefaultJsonProtocol._
 import scala.io.StdIn
 
 object WebServer {
+
+  final case class Item(name: String, id: Long)
+
   def main(args: Array[String]) {
+
+    implicit val itemFormat = jsonFormat2(Item)
 
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
@@ -14,7 +20,7 @@ object WebServer {
 
     val route =
       get {
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "Hello, world!"))
+        complete(Item("test", 999))
       }
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
