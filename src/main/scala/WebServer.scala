@@ -20,7 +20,15 @@ object WebServer {
 
     val route =
       get {
-        complete(Item("test", 999))
+        pathSingleSlash {
+          complete(Item("test", 999))
+        } ~
+          path("ping") {
+            complete("PONG!")
+          } ~
+          path("crash") {
+            sys.error("BOOM!")
+          }
       }
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
