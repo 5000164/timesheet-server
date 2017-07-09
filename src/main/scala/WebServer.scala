@@ -14,7 +14,7 @@ object WebServer {
 
     implicit val itemFormat = jsonFormat2(Item)
 
-    implicit val system = ActorSystem("my-system")
+    implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
 
