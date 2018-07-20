@@ -14,13 +14,21 @@ object WebServer {
 
     implicit val itemFormat = jsonFormat2(Item)
 
-    implicit val system = ActorSystem("my-system")
+    implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
 
     val route =
       get {
-        complete(Item("test", 999))
+        pathSingleSlash {
+          complete(Item("test", 999))
+        } ~
+          path("ping") {
+            complete("PONG!")
+          } ~
+          path("crash") {
+            sys.error("BOOM!")
+          }
       }
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
